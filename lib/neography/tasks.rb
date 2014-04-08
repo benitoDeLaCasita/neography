@@ -1,6 +1,7 @@
 # borrowed from architect4r
 require 'os'
-require 'zip'
+require 'httpclient'
+require 'zip/zip'
 require 'net/http'
 
 namespace :neo4j do
