@@ -157,72 +157,72 @@ module Neography
       context "errors" do
 
         it "raises NodeNotFoundException" do
-          response = error_response(code: 404, message: "a message", exception: "NodeNotFoundException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 404, :message => "a message", :exception => "NodeNotFoundException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error NodeNotFoundException
         end
 
         it "raises OperationFailureException" do
-          response = error_response(code: 409, message: "a message", exception: "OperationFailureException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 409, :message => "a message", :exception => "OperationFailureException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error OperationFailureException
         end
 
         it "raises PropertyValueException" do
-          response = error_response(code: 400, message: "a message", exception: "PropertyValueException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 400, :message => "a message", :exception => "PropertyValueException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error PropertyValueException
         end
 
         it "raises NoSuchPropertyException" do
-          response = error_response(code: 404, message: "a message", exception: "NoSuchPropertyException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 404, :message => "a message", :exception => "NoSuchPropertyException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error NoSuchPropertyException
         end
 
         it "raises RelationshipNotFoundException" do
-          response = error_response(code: 404, message: "a message", exception: "RelationshipNotFoundException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 404, :message => "a message", :exception => "RelationshipNotFoundException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error RelationshipNotFoundException
         end
 
         it "raises BadInputException" do
-          response = error_response(code: 400, message: "a message", exception: "BadInputException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 400, :message => "a message", :exception => "BadInputException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error BadInputException
         end
 
         it "raises UnauthorizedError" do
-          response = error_response(code: 401)
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 401)
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error UnauthorizedError
         end
 
         it "raises NeographyError in all other cases" do
-          response = error_response(code: 418, message: "I'm a teapot.")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 418, :message => "I'm a teapot.")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error NeographyError
         end
 
         it "raises BadInputException" do
-          response = error_response(code: 500, message: "a message", exception: "JsonParseException")
-          allow(connection.client).to receive(:request).and_return(response)
+          response = error_response(:code => 500, :message => "a message", :exception => "JsonParseException")
+          connection.client.stub(:get).and_return(response)
           expect {
             connection.get("/node/bar")
           }.to raise_error NeographyError
@@ -234,14 +234,12 @@ module Neography
 
         subject(:connection) do
 
-          Connection.new({
-            :logger => Logger.new(nil),
-            :log_enabled => true
-          })
-        
-          let(:expected_response) {"expected_response"}
+        let(:request_body) { {:key1 => :val1} }
 
-          let(:request_body) { {key1: :val1} }
+        it "should log query" do
+          connection.should_receive(:log).with("/db/data/node/bar", request_body).once
+          connection.get("/node/bar", {:body => request_body})
+        end
 
           it "should log query" do
             connection.should_receive(:log).with("/db/data/node/bar", request_body).once
@@ -264,16 +262,8 @@ module Neography
               end
             end
 
-            context "high value" do
-              before { connection.slow_log_threshold = 100_000 }
-              it "should not have output" do
-                expect(@logger).not_to receive(:info)
-              end
-            end
-
-            after do
-              connection.get("/node/bar", {body: request_body})
-            end
+          after do
+            connection.get("/node/bar", {:body => request_body})
           end
         end
       end
