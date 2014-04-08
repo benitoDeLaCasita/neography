@@ -1,3 +1,5 @@
+require 'iconv'
+
 module Neography
   module WasCreated
   end
@@ -47,7 +49,9 @@ module Neography
     end
 
     ACTIONS.each do |action|
-      define_method(action) do |path, options = {}|
+      define_method(action) do |*args|
+        path = args.first
+        options = args.size > 1 ? args[1] : {}
         # This ugly hack is required because internal Batch paths do not start with "/db/data"
         # if somebody has a cleaner solution... pull request please!
         partial_path = path.split("/") 
@@ -102,6 +106,12 @@ module Neography
 
     private
 
+    # Substitution of String#force_encoding which is not existing in ruby 1.8.7
+    # see http://stackoverflow.com/questions/4583924/string-force-encoding-in-ruby-1-8-7-or-rails-2-x#answer-4585362
+    def force_utf8(string)
+      ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', string + ' ')[0..-2]
+    end
+
     def merge_configuration(options)
       options = parse_string_options(options) unless options.is_a? Hash
       config = Neography.configuration.to_hash
@@ -152,16 +162,16 @@ module Neography
       if streaming && batching
         code, body, parsed = handle_batch(stream)
       elsif streaming
-        body = (stream || '').force_encoding("UTF-8")
+        body = force_utf8(stream || '')
       else
-        body = response.body.force_encoding("UTF-8")
+        body = force_utf8(response.body)
       end
       return_result(response, code, body, parsed, path, query_body)
     end
 
     def handle_batch(stream)
       code = 200
-      body = @parser.json(stream.force_encoding("UTF-8"))
+      body = @parser.json(force_utf8(stream.body))
       body.each do |result|
         if result["status"] >= 400
           code = result["status"]
