@@ -2,20 +2,20 @@ module Neography
   class Rest
     module NodePaths
       include Neography::Rest::Helpers
-    
+
       def get_path(from, to, relationships, depth = 1, algorithm = "shortestPath")
         options = path_options(to, relationships, depth, algorithm)
-        @connection.post("/node/%{id}/path" % {:id => get_id(from)}, options) || {}
+        @connection.post("/node/%1$s/path" % [get_id(from)], options) || {}
       end
 
       def get_paths(from, to, relationships, depth = 1, algorithm = "allPaths")
         options = path_options(to, relationships, depth, algorithm)
-        @connection.post("/node/%{id}/paths" % {:id => get_id(from)}, options) || []
+        @connection.post("/node/%1$s/paths" % [get_id(from)], options) || []
       end
 
       def get_shortest_weighted_path(from, to, relationships, weight_attribute = "weight", depth = 1, algorithm = "dijkstra")
         options = path_options(to, relationships, depth, algorithm, { :cost_property => weight_attribute })
-        @connection.post("/node/%{id}/paths" % {:id => get_id(from)}, options) || {}
+        @connection.post("/node/%1$s/paths" % [get_id(from)], options) || {}
       end
 
       private

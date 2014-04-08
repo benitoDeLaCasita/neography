@@ -2,16 +2,16 @@ module Neography
   class Rest
     module OtherNodeRelationships
       include Neography::Rest::Helpers
-    
+
       def get_node_relationships_to(id, other_id, direction = "all", types = [nil] )
-        
+
         body = case parse_direction(direction)
                  when "all"
                    "position.endNode().getId() == " + get_id(other_id)
                  when "in"
                    "position.length() > 0 && position.lastRelationship().getStartNode().getId() == " + get_id(other_id)
                  when "out"
-                   "position.length() > 0 && position.lastRelationship().getEndNode().getId() == " + get_id(other_id) 
+                   "position.length() > 0 && position.lastRelationship().getEndNode().getId() == " + get_id(other_id)
                 end
 
         relationships = {:relationships => Array(types).map{|row| Hash[{:type => row}].merge({:direction => parse_direction(direction)})} }
@@ -19,7 +19,7 @@ module Neography
         if Array(types).first.nil?
           relationships = {}
         end
-                
+
         options = {
           :body => {:order      => "breadth_first",
                     :uniqueness => "relationship_global",
@@ -30,7 +30,7 @@ module Neography
           :headers => json_content_type
         }
 
-        @connection.post("/node/%{id}/traverse/relationship" % {:id => get_id(id)}, options) || []
+        @connection.post("/node/%1$s/traverse/relationship" % [get_id(id)], options) || []
       end
 
     end

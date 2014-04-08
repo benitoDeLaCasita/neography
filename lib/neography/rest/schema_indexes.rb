@@ -2,13 +2,13 @@ module Neography
   class Rest
     module SchemaIndexes
       include Neography::Rest::Helpers
-        
+
       def get_schema_index(label)
-        @connection.get("/schema/index/%{label}" % {:label => label})
+        @connection.get("/schema/index/%1$s" % [label])
       end
 
       def delete_schema_index(label, index)
-        @connection.delete("/schema/index/%{label}/%{index}" % {:label => label, :index => index})
+        @connection.delete("/schema/index/%1$s/%2$s" % [label, index])
       end
 
       def create_schema_index(label, keys = [])
@@ -19,7 +19,7 @@ module Neography
           ).to_json,
           :headers => json_content_type
         }
-        @connection.post("/schema/index/%{label}" % {:label => label}, options)
+        @connection.post("/schema/index/%1$s" % [label], options)
       end
     end
   end

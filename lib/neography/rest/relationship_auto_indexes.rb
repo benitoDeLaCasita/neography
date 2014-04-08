@@ -1,9 +1,9 @@
 module Neography
   class Rest
-    module RelationshipAutoIndexes 
-    
+    module RelationshipAutoIndexes
+
       def get_relationship_auto_index(key, value)
-        index = @connection.get("/index/auto/relationship/%{key}/%{value}" % {:key => key, :value => encode(value)}) || []
+        index = @connection.get("/index/auto/relationship/%1$s/%2$s" % [key, encode(value)]) || []
         return nil if index.empty?
         index
       end
@@ -19,11 +19,11 @@ module Neography
       end
 
       def find_relationship_auto_index_by_value(key, value)
-        @connection.get("/index/auto/relationship/%{key}/%{value}" % {:key => key, :value => encode(value)}) || []
+        @connection.get("/index/auto/relationship/%1$s/%2$s" % [key, encode(value)]) || []
       end
 
       def query_relationship_auto_index(query_expression)
-        @connection.get("/index/auto/relationship/?query=%{query}" % {:query => query_expression}) || []
+        @connection.get("/index/auto/relationship/?query=%1$s" % [query_expression]) || []
       end
 
       def get_relationship_auto_index_status
@@ -51,7 +51,7 @@ module Neography
       end
 
       def remove_relationship_auto_index_property(property)
-        @connection.delete("/index/auto/relationship/properties/%{property}" % {:property => property})
+        @connection.delete("/index/auto/relationship/properties/%1$s" % [property])
       end
 
 

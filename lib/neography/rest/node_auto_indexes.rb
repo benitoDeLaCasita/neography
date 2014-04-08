@@ -3,7 +3,7 @@ module Neography
     module NodeAutoIndexes 
     
       def get_node_auto_index(key, value)
-        index = @connection.get("/index/auto/node/%{key}/%{value}" % {:key => key, :value => encode(value)}) || []
+        index = @connection.get("/index/auto/node/%1$s/%2$s" % [key, encode(value)]) || []
         return nil if index.empty?
         index
       end
@@ -19,11 +19,11 @@ module Neography
       end
 
       def find_node_auto_index_by_value(key, value)
-        @connection.get("/index/auto/node/%{key}/%{value}" % {:key => key, :value => encode(value)}) || []
+        @connection.get("/index/auto/node/%1$s/%2$s" % [key, encode(value)]) || []
       end
 
       def query_node_auto_index(query_expression)
-        @connection.get("/index/auto/node/?query=%{query}" % {:query => encode(query_expression)}) || []
+        @connection.get("/index/auto/node/?query=%1$s" % [encode(query_expression)]) || []
       end
 
       def get_node_auto_index_status
@@ -51,7 +51,7 @@ module Neography
       end
 
       def remove_node_auto_index_property(property)
-        @connection.delete("/index/auto/node/properties/%{property}" % {:property => property})
+        @connection.delete("/index/auto/node/properties/%1$s" % [property])
       end
 
 

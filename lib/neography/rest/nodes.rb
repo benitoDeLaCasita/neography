@@ -4,7 +4,7 @@ module Neography
       include Neography::Rest::Helpers
 
       def get_node(id)
-        @connection.get("/node/%{id}" % {:id => get_id(id)})
+        @connection.get("/node/%1$s" % [get_id(id)])
       end
 
       def get_nodes(*nodes)
@@ -17,7 +17,7 @@ module Neography
 
       def get_root
         root_node = @connection.get('/')["reference_node"]
-        @connection.get("/node/%{id}" % {:id => get_id(root_node)})
+        @connection.get("/node/%1$s" % [get_id(root_node)])
       end
 
       def create_node(*args)
@@ -41,7 +41,7 @@ module Neography
       end
 
       def delete_node(id)
-        @connection.delete("/node/%{id}" % {:id => get_id(id)})
+        @connection.delete("/node/%1$s" % [get_id(id)])
       end
 
       def create_nodes(nodes)
@@ -83,7 +83,7 @@ module Neography
 
         created_nodes = []
 
-        while created_nodes.size < nodes.size 
+        while created_nodes.size < nodes.size
           created_nodes << responses.pop
         end
         created_nodes

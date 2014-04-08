@@ -2,7 +2,7 @@ module Neography
   class Rest
     module Batch
       include Neography::Rest::Helpers
-    
+
       def batch(*args)
         do_batch(*args)
       end
@@ -42,11 +42,11 @@ module Neography
       # Nodes
 
       def batch_get_node(id)
-        get "/node/%{id}" % {:id => get_id(id)}
+        get "/node/%1$s" % [get_id(id)]
       end
 
       def batch_delete_node(id)
-        delete "/node/%{id}" % {:id => get_id(id)}
+        delete "/node/%1$s" % [get_id(id)]
       end
 
       def batch_create_node(body)
@@ -71,11 +71,11 @@ module Neography
       end
 
       def batch_drop_node_index(index)
-        delete "/index/node/%{index}?unique" % {:index => index}
+        delete "/index/node/%1$s?unique" % [index]
       end
 
       def batch_create_unique_node(index, key, value, properties)
-        post "/index/node/%{index}?unique" % {:index => index} do
+        post "/index/node/%1$s?unique" % [index] do
           {
             :key        => key,
             :value      => value,
@@ -85,7 +85,7 @@ module Neography
       end
 
       def batch_add_node_to_index(index, key, value, id, unique = false)
-        path = unique ? "/index/node/%{index}?unique" % {:index => index} : "/index/node/%{index}" % {:index => index}
+        path = unique ? "/index/node/%1$s?unique" % [index] : "/index/node/%1$s" % [index]
         post path do
           {
             :uri   => build_node_uri(id),
@@ -96,7 +96,7 @@ module Neography
       end
 
       def batch_get_node_index(index, key, value)
-        get "/index/node/%{index}/%{key}/%{value}" % {:index => index, :key => key, :value => encode(value)}
+        get "/index/node/%1$s/%2$s/%3$s" % [index, key, encode(value)]
       end
 
       def batch_remove_node_from_index(index, key_or_id, value_or_id = nil, id = nil)
@@ -106,19 +106,19 @@ module Neography
       # NodeProperties
 
       def batch_set_node_property(id, property)
-        put "/node/%{id}/properties/%{property}" % {:id => get_id(id), :property => property.keys.first} do
+        put "/node/%1$s/properties/%2$s" % [get_id(id), property.keys.first] do
           property.values.first
         end
       end
 
       def batch_reset_node_properties(id, body)
-        put "/node/%{id}/properties" % {:id => get_id(id)} do
+        put "/node/%1$s/properties" % [get_id(id)] do
           body
         end
       end
 
       def batch_remove_node_property(id, property)
-        delete "/node/%{id}/properties/%{property}" % {:id => get_id(id), :property => property}
+        delete "/node/%1$s/properties/%2$s" % [get_id(id), property]
       end
 
       # NodeLabel
@@ -133,20 +133,20 @@ module Neography
 
       def batch_get_node_relationships(id, direction = nil, types = nil)
         if types.nil?
-          get "/node/%{id}/relationships/%{direction}" % {:id => get_id(id), :direction => direction || 'all'}
+          get "/node/%1$s/relationships/%2$s" % [get_id(id), direction || 'all']
         else
-          get "/node/%{id}/relationships/%{direction}/%{types}" % {:id => get_id(id), :direction => direction, :types => Array(types).join('&')}
+          get "/node/%1$s/relationships/%2$s/%3$s" % [get_id(id), direction, Array(types).join('&')]
         end
       end
 
       # Relationships
 
       def batch_get_relationship(id)
-        get "/relationship/%{id}" % {:id => get_id(id)}
+        get "/relationship/%1$s" % [get_id(id)]
       end
 
       def batch_delete_relationship(id)
-        delete "/relationship/%{id}" % {:id => get_id(id)}
+        delete "/relationship/%1$s" % [get_id(id)]
       end
 
       def batch_create_relationship(type, from, to, data = nil)
@@ -162,7 +162,7 @@ module Neography
       # RelationshipIndexes
 
       def batch_create_unique_relationship(index, key, value, type, from, to, props = nil)
-        post "/index/relationship/%{index}?unique" % {:index => index} do
+        post "/index/relationship/%1$s?unique" % [index] do
           {
             :key   => key,
             :value => value,
@@ -175,7 +175,7 @@ module Neography
       end
 
       def batch_add_relationship_to_index(index, key, value, id)
-        post "/index/relationship/%{index}" % {:index => index} do
+        post "/index/relationship/%1$s" % [index] do
           {
             :uri   => build_relationship_uri(id),
             :key   => key,
@@ -185,7 +185,7 @@ module Neography
       end
 
       def batch_get_relationship_index(index, key, value)
-        get "/index/relationship/%{index}/%{key}/%{value}" % {:index => index, :key => key, :value => encode(value)}
+        get "/index/relationship/%1$s/%2$s/%3$s" % [index, key, encode(value)]
       end
 
       def batch_remove_relationship_from_index(index, key_or_id, value_or_id = nil, id = nil)
@@ -195,7 +195,7 @@ module Neography
       # RelationshipProperties
 
       def batch_set_relationship_property(id, property)
-        put "/relationship/%{id}/properties/%{property}" % {:id => get_id(id), :property => property.keys.first} do
+        put "/relationship/%1$s/properties/%2$s" % [get_id(id), property.keys.first] do
           property.values.first
         end
       end
@@ -235,20 +235,20 @@ module Neography
 
       def remove_from_index_path(klass, index, key_or_id, value_or_id = nil, id = nil)
         if id
-          "/index/#{klass}/%{index}/%{key}/%{value}/%{id}" % {:index => index, :key => key_or_id, :value => value_or_id, :id => get_id(id)}
+          "/index/#{klass}/%1$s/%2$s/%3$s/%4$s" % [index, key_or_id, value_or_id, get_id(id)]
         elsif value_or_id
-          "/index/#{klass}/%{index}/%{key}/%{id}" % {:index => index, :key => key_or_id, :id => get_id(value_or_id)}
+          "/index/#{klass}/%1$s/%2$s/%3$s" % [index, key_or_id, get_id(value_or_id)]
         else
-          "/index/#{klass}/%{index}/%{id}" % {:index => index, :id => get_id(key_or_id)}
+          "/index/#{klass}/%1$s/%2$s" % [index, get_id(key_or_id)]
         end
       end
 
       # Spatial
-      
+
       def batch_get_spatial
         get "/ext/SpatialPlugin"
       end
-    
+
       def batch_add_point_layer(layer, lat = nil, lon = nil)
          post "/ext/SpatialPlugin/graphdb/addSimplePointLayer" do
           {
@@ -260,7 +260,7 @@ module Neography
       end
 
       def batch_add_editable_layer(layer, format = "WKT", node_property_name = "wkt")
-        post "/ext/SpatialPlugin/graphdb/addEditableLayer" do 
+        post "/ext/SpatialPlugin/graphdb/addEditableLayer" do
           {
               :layer => layer,
               :format => format,
@@ -278,16 +278,16 @@ module Neography
       end
 
       def batch_add_geometry_to_layer(layer, geometry)
-        post "/ext/SpatialPlugin/graphdb/addGeometryWKTToLayer" do 
+        post "/ext/SpatialPlugin/graphdb/addGeometryWKTToLayer" do
           {
               :layer => layer,
               :geometry => geometry
             }
         end
       end
-    
+
       def batch_edit_geometry_from_layer(layer, geometry, node)
-        post "/ext/SpatialPlugin/graphdb/updateGeometryFromWKT" do 
+        post "/ext/SpatialPlugin/graphdb/updateGeometryFromWKT" do
           {
               :layer => layer,
               :geometry => geometry,
@@ -295,18 +295,18 @@ module Neography
             }
         end
       end
-    
+
       def batch_add_node_to_layer(layer, node)
-        post "/ext/SpatialPlugin/graphdb/addNodeToLayer" do 
+        post "/ext/SpatialPlugin/graphdb/addNodeToLayer" do
           {
               :layer => layer,
               :node => get_id(node)
             }
         end
       end
-    
+
       def batch_find_geometries_in_bbox(layer, minx, maxx, miny, maxy)
-        post "/ext/SpatialPlugin/graphdb/findGeometriesInBBox" do 
+        post "/ext/SpatialPlugin/graphdb/findGeometriesInBBox" do
           {
               :layer => layer,
               :minx => minx,
@@ -316,9 +316,9 @@ module Neography
             }
         end
       end
-    
+
       def batch_find_geometries_within_distance(layer, pointx, pointy, distance)
-        post "/ext/SpatialPlugin/graphdb/findGeometriesWithinDistance" do 
+        post "/ext/SpatialPlugin/graphdb/findGeometriesWithinDistance" do
           {
               :layer => layer,
               :pointX => pointx,
@@ -327,7 +327,7 @@ module Neography
             }
         end
       end
-      
+
       def batch_create_spatial_index(name, type, lat, lon)
         post "/index/node" do
           {
@@ -343,7 +343,7 @@ module Neography
       end
 
       def batch_add_node_to_spatial_index(index, id)
-        post "/index/node/%{index}" % {:index => index} do
+        post "/index/node/%1$s" % [index] do
           {
             :uri   => build_node_uri(id),
             :key   => "k",

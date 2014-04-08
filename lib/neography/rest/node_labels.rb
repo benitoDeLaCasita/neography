@@ -8,15 +8,15 @@ module Neography
       end
 
       def get_node_labels(id)
-        @connection.get("/node/%{id}/labels"  % {:id => get_id(id)})
+        @connection.get("/node/%1$s/labels"  % [get_id(id)])
       end
 
       def get_nodes_labeled(label)
-        @connection.get("/label/%{label}/nodes" % {:label => label})
+        @connection.get("/label/%1$s/nodes" % [label])
       end
 
       def find_nodes_labeled(label, hash)
-        @connection.get("/label/%{label}/nodes?%{property}=%{value}"  % {:label => label, :property => hash.keys.first, :value => escape(hash.values.first)})
+        @connection.get("/label/%1$s/nodes?%2$s=%3$s"  % [label, hash.keys.first, escape(hash.values.first)])
       end
 
       def add_label(id, label)
@@ -26,7 +26,7 @@ module Neography
           ).to_json,
           :headers => json_content_type
         }
-        @connection.post("/node/%{id}/labels"  % {:id => get_id(id)}, options)
+        @connection.post("/node/%1$s/labels"  % [get_id(id)], options)
       end
 
       def set_label(id, label)
@@ -36,11 +36,11 @@ module Neography
           ).to_json,
           :headers => json_content_type
         }
-        @connection.put("/node/%{id}/labels"  % {:id => get_id(id)}, options)
+        @connection.put("/node/%1$s/labels"  % [get_id(id)], options)
       end
 
       def delete_label(id, label)
-        @connection.delete("/node/%{id}/labels/%{label}" % {:id => get_id(id), :label => label})
+        @connection.delete("/node/%1$s/labels/%2$s" % [get_id(id), label])
       end
 
 

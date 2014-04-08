@@ -2,7 +2,7 @@ module Neography
   class Rest
     module Spatial
       include Neography::Rest::Helpers
-    
+
       def get_spatial
         @connection.get("/ext/SpatialPlugin")
       end
@@ -16,8 +16,8 @@ module Neography
           }.to_json,
           :headers => json_content_type.merge({'Accept' => 'application/json;charset=UTF-8'})
         }
-        
-        @connection.post("/ext/SpatialPlugin/graphdb/addSimplePointLayer", options)        
+
+        @connection.post("/ext/SpatialPlugin/graphdb/addSimplePointLayer", options)
       end
 
       def add_editable_layer(layer, format = "WKT", node_property_name = "wkt")
@@ -29,8 +29,8 @@ module Neography
           }.to_json,
           :headers => json_content_type.merge({'Accept' => 'application/json;charset=UTF-8'})
         }
-        
-        @connection.post("/ext/SpatialPlugin/graphdb/addEditableLayer", options)        
+
+        @connection.post("/ext/SpatialPlugin/graphdb/addEditableLayer", options)
       end
 
       def get_layer(layer)
@@ -42,7 +42,7 @@ module Neography
         }
         @connection.post("/ext/SpatialPlugin/graphdb/getLayer", options)
       end
-      
+
       def add_geometry_to_layer(layer, geometry)
         options = {
           :body => {
@@ -103,7 +103,7 @@ module Neography
         }
         @connection.post("/ext/SpatialPlugin/graphdb/findGeometriesWithinDistance", options)
       end
-      
+
       def create_spatial_index(name, type = nil, lat = nil, lon = nil)
         options = {
           :body => {
@@ -117,7 +117,7 @@ module Neography
           }.to_json,
           :headers => json_content_type.merge({'Accept' => 'application/json;charset=UTF-8'})
         }
-        @connection.post("/index/node", options) 
+        @connection.post("/index/node", options)
       end
 
       def add_node_to_spatial_index(index, id)
@@ -129,7 +129,7 @@ module Neography
           }.to_json,
           :headers => json_content_type.merge({'Accept' => 'application/json;charset=UTF-8'})
         }
-        @connection.post("/index/node/%{index}" % {:index => index}, options)
+        @connection.post("/index/node/%1$s" % [index], options)
       end
 
     end

@@ -2,7 +2,7 @@ module Neography
   class Rest
     module NodeTraversal
       include Neography::Rest::Helpers
-    
+
       def traverse(id, return_type, description)
         options = { :body => {
             "order"           => parse_order(description["order"]),
@@ -17,7 +17,7 @@ module Neography
 
         type = parse_type(return_type)
 
-        @connection.post("/node/%{id}/traverse/%{type}" % {:id => get_id(id), :type => type}, options) || []
+        @connection.post("/node/%1$s/traverse/%2$s" % [get_id(id), type], options) || []
       end
 
     end
