@@ -9,7 +9,7 @@ class MultiJsonParser
     #
     def self.json(body)
       begin
-        MultiJson.load(body)
+        MultiJson.decode(body)
       rescue MultiJson::DecodeError, ArgumentError
         case
           when body == "true"

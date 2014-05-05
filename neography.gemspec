@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency "json", ">= 1.7.7"
   s.add_dependency "os", ">= 0.9.6"
   s.add_dependency "rubyzip", "~> 0.9.4"
-  s.add_dependency "multi_json", ">= 1.0.3"
+  s.add_dependency "multi_json", ">= 1.0.3", "< 1.3.0"
 
   if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
     s.add_runtime_dependency 'rake', '>= 0.8.7'
