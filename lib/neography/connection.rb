@@ -171,7 +171,7 @@ module Neography
 
     def handle_batch(stream)
       code = 200
-      body = @parser.json(force_utf8(stream.body))
+      body = @parser.json(force_utf8(stream))
       body.each do |result|
         if result["status"] >= 400
           code = result["status"]
